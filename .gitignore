@@ -1,0 +1,7 @@
+node_modules/
+.env
+# 環境別の設定ファイル（.env.production など）も秘密情報を含むため除外する。見本の .env.example だけは管理対象にする
+.env.*
+!.env.example
+coverage/
+*.log

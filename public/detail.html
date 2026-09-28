@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>商品詳細 | 在庫管理</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="js/api.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/detail.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="site-title">在庫管理</h1>
+    <nav class="site-nav" aria-label="画面切り替え">
+      <a href="index.html">商品一覧</a>
+      <a href="form.html">商品登録／入出庫</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <p><a href="index.html" class="back-link">&larr; 商品一覧へ戻る</a></p>
+
+    <!-- 画面全体のメッセージ（読み込み中・ID 不正・404 など） -->
+    <div id="page-message" class="message" role="alert" aria-live="assertive" hidden></div>
+
+    <div id="detail-content" hidden>
+      <!-- 商品情報（GET /products/:id） -->
+      <section class="card">
+        <div class="section-header">
+          <h2>商品詳細</h2>
+          <div class="toolbar">
+            <button type="button" id="reload-button" class="btn btn-secondary">更新</button>
+          </div>
+        </div>
+        <dl class="detail-list">
+          <dt>商品ID</dt><dd id="d-product-id" class="mono"></dd>
+          <dt>商品名</dt><dd id="d-product-name"></dd>
+          <dt>在庫数</dt><dd id="d-stock"></dd>
+          <dt>アラート状態</dt><dd id="d-alert"></dd>
+        </dl>
+        <p class="note">アラート状態は在庫数からサーバーで自動判定されます（在庫10未満で「在庫少」）。</p>
+      </section>
+
+      <div class="grid-2">
+        <!-- 入出庫の記録（POST /stock-transactions） -->
+        <section class="card">
+          <h2>入出庫の記録</h2>
+          <div id="tx-message" class="message" role="alert" aria-live="assertive" hidden></div>
+          <form id="tx-form" novalidate>
+            <fieldset class="field">
+              <legend>取引種別 <span class="required">必須</span></legend>
+              <div class="radio-group">
+                <label><input type="radio" name="transaction_type" value="0" required checked> 入庫</label>
+                <label><input type="radio" name="transaction_type" value="1"> 出庫</label>
+              </div>
+              <p class="field-error" data-error-for="transaction_type" hidden></p>
+            </fieldset>
+            <div class="field">
+              <label for="tx-quantity">数量 <span class="required">必須</span></label>
+              <input type="number" id="tx-quantity" name="quantity" required min="1" max="2147483647" step="1"
+                     inputmode="numeric" aria-describedby="tx-quantity-hint">
+              <p class="hint" id="tx-quantity-hint">1以上の整数。出庫は現在の在庫数までです。</p>
+              <p class="field-error" data-error-for="quantity" hidden></p>
+            </div>
+            <!-- 商品IDのエラー（通常は発生しない）を表示する場所 -->
+            <p class="field-error" data-error-for="product_id" hidden></p>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">記録する</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- 商品情報の編集（PUT /products/:id） -->
+        <section class="card">
+          <h2>商品情報の編集</h2>
+          <div id="edit-message" class="message" role="alert" aria-live="assertive" hidden></div>
+          <form id="edit-form" novalidate>
+            <div class="field">
+              <label for="edit-name">商品名</label>
+              <input type="text" id="edit-name" name="product_name" required maxlength="100">
+              <p class="hint">1〜100文字</p>
+              <p class="field-error" data-error-for="product_name" hidden></p>
+            </div>
+            <div class="field">
+              <label for="edit-stock">在庫数</label>
+              <input type="number" id="edit-stock" name="stock" required min="0" max="2147483647" step="1"
+                     inputmode="numeric" aria-describedby="edit-stock-hint">
+              <p class="hint" id="edit-stock-hint">0以上の整数。ここで在庫数を直接変更した場合は入出庫履歴に記録されません（棚卸しの補正用）。</p>
+              <p class="field-error" data-error-for="stock" hidden></p>
+            </div>
+            <p class="field-error" data-error-for="body" hidden></p>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">変更を保存</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- 入出庫履歴（GET /stock-transactions?product_id=） -->
+      <section class="card">
+        <h2>入出庫履歴</h2>
+        <div id="history-message" class="message" role="status" aria-live="polite" hidden></div>
+        <div class="table-wrap">
+          <table class="data-table" id="history-table" hidden>
+            <thead>
+              <tr>
+                <th scope="col">履歴ID</th>
+                <th scope="col">取引種別</th>
+                <th scope="col" class="num">数量</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+        <!-- 次のページがある場合だけ表示する（キーセット方式のページング） -->
+        <div class="load-more">
+          <button type="button" id="history-more-button" class="btn btn-secondary" hidden>さらに読み込む</button>
+        </div>
+      </section>
+
+      <!-- 商品の削除（DELETE /products/:id） -->
+      <section class="card card-danger">
+        <h2>商品の削除</h2>
+        <p class="note">入出庫履歴がある商品は削除できません。</p>
+        <div id="delete-message" class="message" role="alert" aria-live="assertive" hidden></div>
+        <div id="delete-area">
+          <button type="button" id="delete-button" class="btn btn-danger">この商品を削除</button>
+          <!-- 確認用の表示（confirm() は使わず画面内で確認する） -->
+          <div id="delete-confirm" class="confirm-box" hidden>
+            <p id="delete-confirm-text"></p>
+            <div class="form-actions">
+              <button type="button" id="delete-confirm-button" class="btn btn-danger">削除する</button>
+              <button type="button" id="delete-cancel-button" class="btn btn-secondary">キャンセル</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <p><a href="index.html" class="back-link">&larr; 商品一覧へ戻る</a></p>
+  </main>
+</body>
+</html>

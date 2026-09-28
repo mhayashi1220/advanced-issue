@@ -1,0 +1,559 @@
+/* 在庫管理アプリ 共通スタイル */
+
+/* ---- 基本設定 ---- */
+:root {
+  --color-text: #1f2933;
+  --color-muted: #616e7c;
+  --color-bg: #f5f7fa;
+  --color-card: #ffffff;
+  --color-border: #d9e2ec;
+  --color-primary: #1d4ed8;
+  --color-primary-hover: #1e40af;
+  --color-danger: #b91c1c;
+  --color-danger-hover: #991b1b;
+  --color-error-bg: #fdecec;
+  --color-success: #166534;
+  --color-success-bg: #e7f6ec;
+  --color-info-bg: #eef2f7;
+  --color-alert: #b45309;
+  --color-alert-bg: #fff4e0;
+  --radius: 6px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", Meiryo, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+a {
+  color: var(--color-primary);
+}
+
+h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ---- ヘッダー ---- */
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  background: #102a43;
+  color: #fff;
+}
+
+.site-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+
+.site-nav a {
+  color: #d9e2ec;
+  text-decoration: none;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+/* ---- レイアウト ---- */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card-danger {
+  border-color: #f5c2c2;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0 1rem;
+}
+
+.section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+.note,
+.hint,
+.list-count {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin: 0.25rem 0;
+}
+
+.mono {
+  font-family: ui-monospace, Consolas, "Courier New", monospace;
+}
+
+/* ---- 表（横スクロールできる枠に入れる） ---- */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.data-table th {
+  background: #f0f4f8;
+  white-space: nowrap;
+}
+
+.data-table td {
+  overflow-wrap: anywhere;
+}
+
+.data-table .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.data-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.data-table tr.row-alert {
+  background: #fffaf0;
+}
+
+/* 「さらに読み込む」ボタンの配置 */
+/* ボタンが非表示のときに余白が残らないよう、余白はボタン側に付ける */
+.load-more {
+  text-align: center;
+}
+
+.load-more .btn {
+  margin-top: 0.75rem;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+/* ---- 詳細表示 ---- */
+.detail-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.detail-list dt {
+  font-weight: bold;
+  color: var(--color-muted);
+}
+
+.detail-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---- フォーム ---- */
+.field {
+  margin: 0 0 1rem;
+}
+
+fieldset.field {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.field > label,
+.field > legend {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  padding: 0;
+}
+
+.field input[type="text"],
+.field input[type="number"],
+.field select {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5rem 0.6rem;
+  font: inherit;
+  border: 1px solid #9fb3c8;
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.field [aria-invalid="true"] {
+  border-color: var(--color-danger);
+  background: #fffafa;
+}
+
+.field .hint {
+  margin: 0.25rem 0 0;
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.radio-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+.required {
+  display: inline-block;
+  margin-left: 0.25rem;
+  padding: 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: #fff;
+  background: var(--color-danger);
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+.field-error {
+  margin: 0.25rem 0 0;
+  color: var(--color-danger);
+  font-size: 0.875rem;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---- ボタン ---- */
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  color: #fff;
+  background: var(--color-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  color: var(--color-text);
+  background: #fff;
+  border-color: #9fb3c8;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f0f4f8;
+}
+
+.btn-danger {
+  color: #fff;
+  background: var(--color-danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--color-danger-hover);
+}
+
+.btn-small {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 送信中のフォーム */
+[aria-busy="true"] {
+  cursor: progress;
+}
+
+/* ---- メッセージ ---- */
+.message {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  border-left: 4px solid transparent;
+  overflow-wrap: anywhere;
+}
+
+.message p {
+  margin: 0;
+}
+
+.message p + p {
+  margin-top: 0.4rem;
+}
+
+.message ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.message-error {
+  color: var(--color-danger);
+  background: var(--color-error-bg);
+  border-left-color: var(--color-danger);
+}
+
+.message-success {
+  color: var(--color-success);
+  background: var(--color-success-bg);
+  border-left-color: var(--color-success);
+}
+
+.message-info {
+  color: var(--color-muted);
+  background: var(--color-info-bg);
+  border-left-color: #9fb3c8;
+}
+
+.confirm-box {
+  padding: 0.75rem 1rem;
+  border: 1px solid #f5c2c2;
+  border-radius: var(--radius);
+  background: var(--color-error-bg);
+}
+
+.confirm-box p {
+  margin: 0 0 0.75rem;
+  color: var(--color-danger);
+  font-weight: bold;
+}
+
+/* ---- バッジ ---- */
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.badge-alert {
+  color: var(--color-alert);
+  background: var(--color-alert-bg);
+  border: 1px solid #f5c26b;
+}
+
+.badge-ok {
+  color: var(--color-success);
+  background: var(--color-success-bg);
+  border: 1px solid #a7dbb8;
+}
+
+.badge-in {
+  color: var(--color-primary);
+  background: #e8efff;
+}
+
+.badge-out {
+  color: var(--color-danger);
+  background: var(--color-error-bg);
+}
+
+/* ---- スマートフォン（幅 400px 前後） ---- */
+@media (max-width: 480px) {
+  body {
+    font-size: 15px;
+  }
+
+  .container {
+    padding: 0.5rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar {
+    width: 100%;
+  }
+
+  .toolbar .btn {
+    flex: 1 1 auto;
+  }
+
+  .form-actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .detail-list {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+
+  .detail-list dd {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* ---- 在庫アラートバナー（商品一覧画面） ---- */
+/* ライブリージョン本体（.alert-banner-region）にはスタイルを付けない。中身が空のときは高さ 0 になり表示上は隠れる */
+
+.alert-banner {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-alert);
+  background: var(--color-alert-bg);
+  border: 1px solid #f5c26b;
+  border-left: 4px solid var(--color-alert);
+  border-radius: var(--radius);
+  overflow-wrap: anywhere;
+}
+
+.alert-banner p {
+  margin: 0;
+}
+
+.alert-banner-title {
+  font-weight: bold;
+}
+
+.alert-banner-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alert-banner-list a {
+  color: var(--color-text);
+}
+
+.alert-banner-stock {
+  margin-left: 0.35rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.alert-banner .alert-banner-more {
+  margin-top: 0.4rem;
+  font-size: 0.875rem;
+}
+
+/* 取得失敗時は一覧の邪魔をしないよう控えめに表示する */
+.alert-banner-error {
+  color: var(--color-muted);
+  background: var(--color-info-bg);
+  border-color: var(--color-border);
+  border-left-color: var(--color-danger);
+  font-size: 0.875rem;
+}

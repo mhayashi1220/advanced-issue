@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>商品登録／入出庫 | 在庫管理</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="js/api.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/form.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="site-title">在庫管理</h1>
+    <nav class="site-nav" aria-label="画面切り替え">
+      <a href="index.html">商品一覧</a>
+      <a href="form.html" aria-current="page">商品登録／入出庫</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <p><a href="index.html" class="back-link">&larr; 商品一覧へ戻る</a></p>
+
+    <div class="grid-2">
+      <!-- 商品登録フォーム（POST /products） -->
+      <section class="card">
+        <h2>商品登録</h2>
+        <div id="product-message" class="message" role="alert" aria-live="assertive" hidden></div>
+
+        <form id="product-form" novalidate>
+          <div class="field">
+            <label for="product_id">商品ID <span class="required">必須</span></label>
+            <input type="text" id="product_id" name="product_id" required
+                   maxlength="10" pattern="[A-Za-z0-9_\-]{1,10}" autocomplete="off"
+                   aria-describedby="product_id-hint">
+            <p class="hint" id="product_id-hint">半角英数字・ハイフン・アンダースコア、1〜10文字</p>
+            <p class="field-error" data-error-for="product_id" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="product_name">商品名 <span class="required">必須</span></label>
+            <input type="text" id="product_name" name="product_name" required maxlength="100"
+                   aria-describedby="product_name-hint">
+            <p class="hint" id="product_name-hint">1〜100文字</p>
+            <p class="field-error" data-error-for="product_name" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="stock">初期在庫 <span class="required">必須</span></label>
+            <input type="number" id="stock" name="stock" required min="0" max="2147483647" step="1"
+                   value="0" inputmode="numeric" aria-describedby="stock-hint">
+            <p class="hint" id="stock-hint">0以上の整数。在庫10未満でアラート（在庫少）になります。アラートの判定はサーバーで自動的に行われます。</p>
+            <p class="field-error" data-error-for="stock" hidden></p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">登録する</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 入出庫フォーム（POST /stock-transactions） -->
+      <section class="card">
+        <h2>入出庫の記録</h2>
+        <div id="transaction-message" class="message" role="alert" aria-live="assertive" hidden></div>
+
+        <form id="transaction-form" novalidate>
+          <div class="field">
+            <label for="tx_product_id">商品 <span class="required">必須</span></label>
+            <select id="tx_product_id" name="product_id" required>
+              <option value="">読み込み中…</option>
+            </select>
+            <p class="field-error" data-error-for="product_id" hidden></p>
+          </div>
+
+          <fieldset class="field">
+            <legend>取引種別 <span class="required">必須</span></legend>
+            <div class="radio-group">
+              <label><input type="radio" name="transaction_type" value="0" required checked> 入庫</label>
+              <label><input type="radio" name="transaction_type" value="1"> 出庫</label>
+            </div>
+            <p class="field-error" data-error-for="transaction_type" hidden></p>
+          </fieldset>
+
+          <div class="field">
+            <label for="quantity">数量 <span class="required">必須</span></label>
+            <input type="number" id="quantity" name="quantity" required min="1" max="2147483647" step="1"
+                   inputmode="numeric" aria-describedby="quantity-hint">
+            <p class="hint" id="quantity-hint">1以上の整数。出庫は現在の在庫数までです。</p>
+            <p class="field-error" data-error-for="quantity" hidden></p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">記録する</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <!-- 現在の在庫一覧（登録・入出庫の成功後に自動で再取得する） -->
+    <section class="card">
+      <div class="section-header">
+        <h2>現在の在庫一覧</h2>
+        <div class="toolbar">
+          <button type="button" id="reload-button" class="btn btn-secondary">更新</button>
+        </div>
+      </div>
+      <div id="list-message" class="message" role="status" aria-live="polite" hidden></div>
+      <div class="table-wrap">
+        <table class="data-table" id="product-table" hidden>
+          <thead>
+            <tr>
+              <th scope="col">商品ID</th>
+              <th scope="col">商品名</th>
+              <th scope="col" class="num">在庫数</th>
+              <th scope="col">アラート</th>
+              <th scope="col">操作</th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody"></tbody>
+        </table>
+      </div>
+      <!-- 次のページがある場合だけ表示する（キーセット方式のページング） -->
+      <div class="load-more">
+        <button type="button" id="load-more-button" class="btn btn-secondary" hidden>さらに読み込む</button>
+      </div>
+    </section>
+
+    <p><a href="index.html" class="back-link">&larr; 商品一覧へ戻る</a></p>
+  </main>
+</body>
+</html>

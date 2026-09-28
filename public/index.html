@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>商品一覧 | 在庫管理</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="js/api.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/index.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="site-title">在庫管理</h1>
+    <nav class="site-nav" aria-label="画面切り替え">
+      <a href="index.html" aria-current="page">商品一覧</a>
+      <a href="form.html">商品登録／入出庫</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- 在庫アラートバナー（在庫10未満の商品がある場合だけ中身を表示する） -->
+    <!-- 支援技術へ確実に通知するため、ライブリージョン自体は常に DOM 上に置き、中身だけを差し替える -->
+    <div id="alert-banner" class="alert-banner-region" role="status" aria-live="polite"></div>
+
+    <section class="card">
+      <div class="section-header">
+        <h2>商品一覧</h2>
+        <div class="toolbar">
+          <label class="toggle">
+            <input type="checkbox" id="alert-only">
+            アラート対象のみ表示
+          </label>
+          <button type="button" id="reload-button" class="btn btn-secondary">更新</button>
+          <button type="button" id="csv-download-button" class="btn btn-secondary">CSV ダウンロード</button>
+          <a href="form.html" class="btn btn-primary">商品登録／入出庫</a>
+        </div>
+      </div>
+      <p class="note">在庫数が10未満の商品には「在庫少」のバッジが表示されます。</p>
+
+      <!-- CSV ダウンロードのエラー表示領域（一覧の読み込み表示に上書きされないよう分けている） -->
+      <div id="csv-message" class="message" role="status" aria-live="polite" hidden></div>
+
+      <!-- 読み込み中・0件・エラーの表示領域 -->
+      <div id="list-message" class="message" role="status" aria-live="polite" hidden></div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="product-table" hidden>
+          <thead>
+            <tr>
+              <th scope="col">商品ID</th>
+              <th scope="col">商品名</th>
+              <th scope="col" class="num">在庫数</th>
+              <th scope="col">アラート</th>
+              <th scope="col">操作</th>
+            </tr>
+          </thead>
+          <tbody id="product-tbody"></tbody>
+        </table>
+      </div>
+      <!-- 次のページがある場合だけ表示する（キーセット方式のページング） -->
+      <div class="load-more">
+        <button type="button" id="load-more-button" class="btn btn-secondary" hidden>さらに読み込む</button>
+      </div>
+      <p class="list-count" id="list-count" hidden></p>
+    </section>
+  </main>
+</body>
+</html>
